@@ -7,6 +7,7 @@ import {
   fetchLatestTrendData,
   fetchSuggestionData,
 } from "../../services/fakerdata";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar: React.FC = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -14,7 +15,7 @@ const SearchBar: React.FC = () => {
   const [popularSuggestions, setPopularSuggestions] = useState<
     SuggestionType[]
   >([]);
-
+  const navigate = useNavigate();
   const handleSearchBarClick = async () => {
     setShowSuggestions(true);
     const trends = await fetchLatestTrendData();
@@ -22,10 +23,17 @@ const SearchBar: React.FC = () => {
     setLatestTrends(trends);
     setPopularSuggestions(suggestions);
   };
+  const onSubmitHandler = (e: any) => {
+    e.preventDefault();
+    navigate("/products");
+  };
 
+  const navigateToProductsPage = () => {
+    navigate("/products");
+  };
   return (
     <div className="search-container">
-      <form className="search-bar">
+      <form className="search-bar" onSubmit={(e) => onSubmitHandler(e)}>
         <input
           type="text"
           className="search-input"
@@ -42,7 +50,7 @@ const SearchBar: React.FC = () => {
             <div className="title">Latest Trends</div>
             <div className="trend-items">
               {latestTrends.map((trend, index) => (
-                <div className="trend-item" key={index}>
+                <div className="trend-item" key={index} onClick={navigateToProductsPage}>
                   <img src={trend.productImg} alt={trend.productName} />
                   <div>{trend.productName}</div>
                 </div>
@@ -54,7 +62,7 @@ const SearchBar: React.FC = () => {
             <div className="suggestion-item">
               {popularSuggestions?.map((suggestion, index) => {
                 return (
-                  <div key={index} className="suggestion_product">
+                  <div key={index} className="suggestion_product" onClick={navigateToProductsPage}>
                     {suggestion.productName}
                   </div>
                 );
